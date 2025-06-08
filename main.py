@@ -1,9 +1,8 @@
-import shutil
-        tk.Button(self.master, text="Import File", command=self.import_file).grid(row=2, column=3, pady=2)
-        tk.Button(self.master, text="Run File", command=self.run_file).grid(row=3, column=3, pady=2)
-import json
+import os
 import subprocess
 import sys
+import shutil
+import json
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 
@@ -34,6 +33,7 @@ class ProjectManagerApp:
 
         tk.Button(self.master, text="New File", command=self.new_file).grid(row=0, column=3, pady=2)
         tk.Button(self.master, text="Download File", command=self.download_file).grid(row=1, column=3, pady=2)
+        tk.Button(self.master, text="Import File", command=self.import_file).grid(row=2, column=3, pady=2)
         tk.Button(self.master, text="Run File", command=self.run_file).grid(row=2, column=3, pady=2)
 
         self.preview = scrolledtext.ScrolledText(self.master, width=80, height=20, state="disabled")
