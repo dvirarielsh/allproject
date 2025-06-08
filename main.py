@@ -176,7 +176,7 @@ class ProjectManagerApp:
         else:
             messagebox.showinfo("Info", "No file selected.")
 
-    def add_file(self):
+    def add_file(self): pass
     def import_file(self):
         if not self.selected_project:
             messagebox.showinfo("Info", "Please select a project first.")
