@@ -1,6 +1,7 @@
-import os
+mport os
 import json
 import subprocess
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 
@@ -63,6 +64,10 @@ class ProjectManagerApp:
             if path not in self.projects:
                 self.projects.append(path)
                 self.project_list.insert(tk.END, path)
+                self.project_list.selection_clear(0, tk.END)
+                self.project_list.selection_set(tk.END)
+                self.project_list.activate(tk.END)
+                self.on_project_select(None)
             else:
                 messagebox.showinfo("Info", "Project already exists.")
 
@@ -109,7 +114,7 @@ class ProjectManagerApp:
     def on_file_select(self, event):
         idx = self.file_list.curselection()
         if idx and self.selected_project:
-            filename = self.file_list.get(idx)
+            filename = self.file_list.get(idx[0])
             filepath = os.path.join(self.selected_project, filename)
             try:
                 with open(filepath, "r", encoding="utf-8") as f:
@@ -142,6 +147,10 @@ class ProjectManagerApp:
                     with open(path, 'w', encoding='utf-8') as f:
                         f.write(text.get(1.0, tk.END))
                     self.file_list.insert(tk.END, name)
+                    self.file_list.selection_clear(0, tk.END)
+                    self.file_list.selection_set(tk.END)
+                    self.file_list.activate(tk.END)
+                    self.on_file_select(None)
                     top.destroy()
                 except Exception as e:
                     messagebox.showerror("Error", f"Failed to save file: {e}")
@@ -150,7 +159,7 @@ class ProjectManagerApp:
     def download_file(self):
         idx = self.file_list.curselection()
         if idx and self.selected_project:
-            filename = self.file_list.get(idx)
+            filename = self.file_list.get(idx[0])
             src_path = os.path.join(self.selected_project, filename)
             dest_path = filedialog.asksaveasfilename(initialfile=filename)
             if dest_path:
@@ -165,10 +174,10 @@ class ProjectManagerApp:
     def run_file(self):
         idx = self.file_list.curselection()
         if idx and self.selected_project:
-            filename = self.file_list.get(idx)
+            filename = self.file_list.get(idx[0])
             filepath = os.path.join(self.selected_project, filename)
             try:
-                result = subprocess.run(["python", filepath], capture_output=True, text=True)
+                result = subprocess.run([sys.executable, filepath], capture_output=True, text=True)
                 output_window = tk.Toplevel(self.master)
                 output_window.title(f"Output: {filename}")
                 out_text = scrolledtext.ScrolledText(output_window, width=80, height=20)
