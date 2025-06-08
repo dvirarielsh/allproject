@@ -1,4 +1,4 @@
-import os
+mport os
 import json
 import subprocess
 import sys
@@ -64,7 +64,6 @@ class ProjectManagerApp:
             if path not in self.projects:
                 self.projects.append(path)
                 self.project_list.insert(tk.END, path)
-                # automatically select the newly added project
                 self.project_list.selection_clear(0, tk.END)
                 self.project_list.selection_set(tk.END)
                 self.project_list.activate(tk.END)
