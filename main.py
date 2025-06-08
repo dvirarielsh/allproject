@@ -20,6 +20,7 @@ class ProjectManagerApp:
 
     def setup_ui(self):
         self.project_list = tk.Listbox(self.master, width=40, exportselection=False)
+        self.project_list = tk.Listbox(self.master, width=40)
         self.project_list.grid(row=0, column=0, rowspan=6, padx=5, pady=5, sticky="ns")
         self.project_list.bind("<<ListboxSelect>>", self.on_project_select)
 
@@ -28,13 +29,15 @@ class ProjectManagerApp:
         tk.Button(self.master, text="Open Folder", command=self.open_folder).grid(row=2, column=1, pady=2)
 
         self.file_list = tk.Listbox(self.master, width=40, exportselection=False)
+        self.file_list = tk.Listbox(self.master, width=40)
         self.file_list.grid(row=0, column=2, rowspan=6, padx=5, pady=5, sticky="ns")
         self.file_list.bind("<<ListboxSelect>>", self.on_file_select)
 
         tk.Button(self.master, text="New File", command=self.new_file).grid(row=0, column=3, pady=2)
         tk.Button(self.master, text="Download File", command=self.download_file).grid(row=1, column=3, pady=2)
         tk.Button(self.master, text="Add File", command=self.add_file).grid(row=2, column=3, pady=2)
-        tk.Button(self.master, text="Run File", command=self.run_file).grid(row=3, column=3, pady=2)
+        tk.Button(self.master, text="Run File", command=self.run_file).grid(row=4, column=3, pady=2)
+        tk.Button(self.master, text="Import File", command=self.import_file).grid(row=2, column=3, pady=2)
 
         self.preview = scrolledtext.ScrolledText(self.master, width=80, height=20, state="disabled")
         self.preview.grid(row=6, column=0, columnspan=4, padx=5, pady=5)
@@ -66,7 +69,6 @@ class ProjectManagerApp:
             if path not in self.projects:
                 self.projects.append(path)
                 self.project_list.insert(tk.END, path)
-                # automatically select the newly added project
                 self.project_list.selection_clear(0, tk.END)
                 self.project_list.selection_set(tk.END)
                 self.project_list.activate(tk.END)
@@ -174,6 +176,13 @@ class ProjectManagerApp:
                     dst.write(src.read())
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to download file: {e}")
+            dest_path = filedialog.asksaveasfilename(initialfile=filename)
+            if dest_path:
+                try:
+                    with open(src_path, 'rb') as src, open(dest_path, 'wb') as dst:
+                        dst.write(src.read())
+                except Exception as e:
+                    messagebox.showerror("Error", f"Failed to download file: {e}")
         else:
             messagebox.showinfo("Info", "No file selected.")
 
@@ -186,6 +195,12 @@ class ProjectManagerApp:
             filetypes=[("Python Files", "*.py")],
             initialdir=self.selected_project
         )
+
+    def import_file(self):
+        if not self.selected_project:
+            messagebox.showinfo("Info", "Please select a project first.")
+            return
+        file_path = filedialog.askopenfilename(title="Select Python File", filetypes=[("Python Files", "*.py")])
         if file_path:
             dest = os.path.join(self.selected_project, os.path.basename(file_path))
             if os.path.exists(dest):
@@ -196,6 +211,7 @@ class ProjectManagerApp:
                 self.file_list.insert(tk.END, os.path.basename(file_path))
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to add file: {e}")
+                messagebox.showerror("Error", f"Failed to import file: {e}")
 
     def run_file(self):
         idx = self.file_list.curselection()
@@ -209,6 +225,8 @@ class ProjectManagerApp:
                     text=True,
                     cwd=self.selected_project,
                 )
+
+                result = subprocess.run([sys.executable, filepath], capture_output=True, text=True)
                 output_window = tk.Toplevel(self.master)
                 output_window.title(f"Output: {filename}")
                 out_text = scrolledtext.ScrolledText(output_window, width=80, height=20)
