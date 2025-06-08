@@ -166,6 +166,16 @@ class ProjectManagerApp:
         if idx and self.selected_project:
             filename = self.file_list.get(idx[0])
             src_path = os.path.join(self.selected_project, filename)
+        dest_path = filedialog.asksaveasfilename(
+            initialfile=filename,
+            initialdir=self.selected_project
+        )
+        if dest_path:
+            try:
+                with open(src_path, 'rb') as src, open(dest_path, 'wb') as dst:
+                    dst.write(src.read())
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to download file: {e}")
             dest_path = filedialog.asksaveasfilename(initialfile=filename)
             if dest_path:
                 try:
@@ -177,6 +187,15 @@ class ProjectManagerApp:
             messagebox.showinfo("Info", "No file selected.")
 
     def add_file(self):
+        if not self.selected_project:
+            messagebox.showinfo("Info", "Please select a project first.")
+            return
+        file_path = filedialog.askopenfilename(
+            title="Select Python File",
+            filetypes=[("Python Files", "*.py")],
+            initialdir=self.selected_project
+        )
+
     def import_file(self):
         if not self.selected_project:
             messagebox.showinfo("Info", "Please select a project first.")
@@ -200,6 +219,13 @@ class ProjectManagerApp:
             filename = self.file_list.get(idx[0])
             filepath = os.path.join(self.selected_project, filename)
             try:
+                result = subprocess.run(
+                    [sys.executable, filepath],
+                    capture_output=True,
+                    text=True,
+                    cwd=self.selected_project,
+                )
+
                 result = subprocess.run([sys.executable, filepath], capture_output=True, text=True)
                 output_window = tk.Toplevel(self.master)
                 output_window.title(f"Output: {filename}")
