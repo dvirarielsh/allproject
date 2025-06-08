@@ -1,8 +1,8 @@
 import os
-import json
 import subprocess
 import sys
 import shutil
+import json
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 
@@ -34,7 +34,7 @@ class ProjectManagerApp:
         tk.Button(self.master, text="New File", command=self.new_file).grid(row=0, column=3, pady=2)
         tk.Button(self.master, text="Download File", command=self.download_file).grid(row=1, column=3, pady=2)
         tk.Button(self.master, text="Import File", command=self.import_file).grid(row=2, column=3, pady=2)
-        tk.Button(self.master, text="Run File", command=self.run_file).grid(row=3, column=3, pady=2)
+        tk.Button(self.master, text="Run File", command=self.run_file).grid(row=2, column=3, pady=2)
 
         self.preview = scrolledtext.ScrolledText(self.master, width=80, height=20, state="disabled")
         self.preview.grid(row=6, column=0, columnspan=4, padx=5, pady=5)
@@ -66,7 +66,6 @@ class ProjectManagerApp:
             if path not in self.projects:
                 self.projects.append(path)
                 self.project_list.insert(tk.END, path)
-                # automatically select the newly added project
                 self.project_list.selection_clear(0, tk.END)
                 self.project_list.selection_set(tk.END)
                 self.project_list.activate(tk.END)
