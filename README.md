@@ -5,7 +5,7 @@ This simple Tkinter application lets you manage multiple Python project folders.
 - Add or remove project directories.
 - View `.py` files for each project and preview their contents.
 - Create new Python files within a project.
-- Import an existing `.py` file into a project.
+- Add an existing `.py` file to a project using the **Add File** button.
 - Download a copy of any file to another location.
 - Run a selected file and see its output.
 - Open the project folder in Windows Explorer.
