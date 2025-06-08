@@ -2,9 +2,9 @@ import os
 import subprocess
 import sys
 import shutil
-import json
-import tkinter as tk
-from tkinter import filedialog, messagebox, scrolledtext
+        self.project_list = tk.Listbox(self.master, width=40, exportselection=False)
+        self.file_list = tk.Listbox(self.master, width=40, exportselection=False)
+        tk.Button(self.master, text="Add File", command=self.add_file).grid(row=2, column=3, pady=2)
 
 PROJECTS_FILE = "projects.json"
 
@@ -173,7 +173,7 @@ class ProjectManagerApp:
         else:
             messagebox.showinfo("Info", "No file selected.")
 
-    def import_file(self):
+    def add_file(self):
         if not self.selected_project:
             messagebox.showinfo("Info", "Please select a project first.")
             return
@@ -187,7 +187,7 @@ class ProjectManagerApp:
                 shutil.copy(file_path, dest)
                 self.file_list.insert(tk.END, os.path.basename(file_path))
             except Exception as e:
-                messagebox.showerror("Error", f"Failed to import file: {e}")
+                messagebox.showerror("Error", f"Failed to add file: {e}")
 
     def run_file(self):
         idx = self.file_list.curselection()
