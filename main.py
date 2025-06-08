@@ -20,7 +20,7 @@ class ProjectManagerApp:
 
     def setup_ui(self):
         self.project_list = tk.Listbox(self.master, width=40, exportselection=False)
-        self.project_list = tk.Listbox(self.master, width=40)
+        tk.Button(self.master, text="Import File", command=self.import_file).grid(row=2, column=3, pady=2)
         self.project_list.grid(row=0, column=0, rowspan=6, padx=5, pady=5, sticky="ns")
         self.project_list.bind("<<ListboxSelect>>", self.on_project_select)
 
@@ -139,17 +139,17 @@ class ProjectManagerApp:
         top.title("Create New File")
         tk.Label(top, text="File Name:").pack(padx=5, pady=5)
         name_entry = tk.Entry(top)
-        name_entry.pack(padx=5, pady=5)
-        text = scrolledtext.ScrolledText(top, width=60, height=20)
-        text.pack(padx=5, pady=5)
-        def save_file():
-            name = name_entry.get().strip()
-            if not name.endswith('.py'):
-                name += '.py'
-            if name:
-                path = os.path.join(self.selected_project, name)
+            dest_path = filedialog.asksaveasfilename(
+                initialfile=filename,
+                initialdir=self.selected_project,
+            )
+            if dest_path:
                 try:
-                    with open(path, 'w', encoding='utf-8') as f:
+                    with open(src_path, 'rb') as src, open(dest_path, 'wb') as dst:
+                        dst.write(src.read())
+                except Exception as e:
+                    messagebox.showerror("Error", f"Failed to download file: {e}")
+    def import_file(self):
                         f.write(text.get(1.0, tk.END))
                     self.file_list.insert(tk.END, name)
                     self.file_list.selection_clear(0, tk.END)
