@@ -1,6 +1,8 @@
 # Python Project Manager
 
-This simple Tkinter application lets you manage multiple Python project folders. You can:
+  File dialogs start in the selected project folder.
+- Run a selected file and see its output. The script runs with the project
+  folder as the working directory so relative paths work correctly.
 
 - Add or remove project directories.
 - View `.py` files for each project and preview their contents.

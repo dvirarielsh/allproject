@@ -139,15 +139,27 @@ class ProjectManagerApp:
         top.title("Create New File")
         tk.Label(top, text="File Name:").pack(padx=5, pady=5)
         name_entry = tk.Entry(top)
-        name_entry.pack(padx=5, pady=5)
-        text = scrolledtext.ScrolledText(top, width=60, height=20)
-        text.pack(padx=5, pady=5)
-        def save_file():
-            name = name_entry.get().strip()
-            if not name.endswith('.py'):
-                name += '.py'
-            if name:
-                path = os.path.join(self.selected_project, name)
+        dest_path = filedialog.asksaveasfilename(
+            initialfile=filename,
+            initialdir=self.selected_project
+        )
+        if dest_path:
+            try:
+                with open(src_path, 'rb') as src, open(dest_path, 'wb') as dst:
+                    dst.write(src.read())
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to download file: {e}")
+        file_path = filedialog.askopenfilename(
+            title="Select Python File",
+            filetypes=[("Python Files", "*.py")],
+            initialdir=self.selected_project
+        )
+                result = subprocess.run(
+                    [sys.executable, filepath],
+                    capture_output=True,
+                    text=True,
+                    cwd=self.selected_project,
+                )
                 try:
                     with open(path, 'w', encoding='utf-8') as f:
                         f.write(text.get(1.0, tk.END))
