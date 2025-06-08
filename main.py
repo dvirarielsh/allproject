@@ -1,4 +1,6 @@
-mport os
+import shutil
+        tk.Button(self.master, text="Import File", command=self.import_file).grid(row=2, column=3, pady=2)
+        tk.Button(self.master, text="Run File", command=self.run_file).grid(row=3, column=3, pady=2)
 import json
 import subprocess
 import sys
@@ -170,6 +172,22 @@ class ProjectManagerApp:
                     messagebox.showerror("Error", f"Failed to download file: {e}")
         else:
             messagebox.showinfo("Info", "No file selected.")
+
+    def import_file(self):
+        if not self.selected_project:
+            messagebox.showinfo("Info", "Please select a project first.")
+            return
+        file_path = filedialog.askopenfilename(title="Select Python File", filetypes=[("Python Files", "*.py")])
+        if file_path:
+            dest = os.path.join(self.selected_project, os.path.basename(file_path))
+            if os.path.exists(dest):
+                messagebox.showinfo("Info", "File already exists in project.")
+                return
+            try:
+                shutil.copy(file_path, dest)
+                self.file_list.insert(tk.END, os.path.basename(file_path))
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to import file: {e}")
 
     def run_file(self):
         idx = self.file_list.curselection()
