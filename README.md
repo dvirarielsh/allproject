@@ -18,3 +18,5 @@ Run the program with:
 python main.py
 ```
 
+The GUI requires a graphical environment such as Windows 10. Running on a headless server will cause Tkinter to fail.
+

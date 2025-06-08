@@ -1,6 +1,7 @@
 import os
 import json
 import subprocess
+import sys
 import tkinter as tk
 from tkinter import filedialog, messagebox, scrolledtext
 
@@ -177,7 +178,7 @@ class ProjectManagerApp:
             filename = self.file_list.get(idx[0])
             filepath = os.path.join(self.selected_project, filename)
             try:
-                result = subprocess.run(["python", filepath], capture_output=True, text=True)
+                result = subprocess.run([sys.executable, filepath], capture_output=True, text=True)
                 output_window = tk.Toplevel(self.master)
                 output_window.title(f"Output: {filename}")
                 out_text = scrolledtext.ScrolledText(output_window, width=80, height=20)
